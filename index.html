@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greek Morphology Trainer</title>
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #121826;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 { font-size: 22px; }
+
+select, button {
+    font-size: 16px;
+    padding: 8px;
+    margin: 8px;
+    border-radius: 8px;
+    border: none;
+}
+
+#word {
+    font-size: 44px;
+    margin: 30px 0;
+}
+
+#parsing span {
+    display: inline-block;
+    background: #1f2937;
+    padding: 8px 12px;
+    margin: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.hidden {
+    background: transparent !important;
+    color: transparent !important;
+    border: 1px dashed #444;
+}
+
+#parsing {
+    min-height: 100px;
+}
+</style>
+</head>
+<body>
+
+<h1>Greek Morphology Trainer</h1>
+
+<select id="posFilter">
+  <option value="all">All Parts of Speech</option>
+  <option value="noun">Nouns</option>
+  <option value="verb">Finite Verbs</option>
+  <option value="participle">Participles</option>
+</select>
+
+<button onclick="newWord()">New Word</button>
+
+<div id="word"></div>
+
+<div id="parsing"></div>
+
+<script>
+const words = [
+
+{
+word: "λόγος",
+pos: "noun",
+parsing: {
+"Part of Speech": "Noun",
+"Case": "Nominative",
+"Number": "Singular",
+"Gender": "Masculine",
+"Lexical Form": "λόγος",
+"Gloss": "word"
+}
+},
+
+{
+word: "λύει",
+pos: "verb",
+parsing: {
+"Part of Speech": "Verb",
+"Tense": "Present",
+"Voice": "Active",
+"Mood": "Indicative",
+"Person": "3rd",
+"Number": "Singular",
+"Lexical Form": "λύω",
+"Gloss": "he/she/it looses"
+}
+},
+
+{
+word: "λύσας",
+pos: "participle",
+parsing: {
+"Part of Speech": "Participle",
+"Tense": "Aorist",
+"Voice": "Active",
+"Case": "Nominative",
+"Number": "Singular",
+"Gender": "Masculine",
+"Lexical Form": "λύω",
+"Gloss": "having loosed"
+}
+},
+
+{
+word: "λυθείς",
+pos: "participle",
+parsing: {
+"Part of Speech": "Participle",
+"Tense": "Aorist",
+"Voice": "Passive",
+"Case": "Nominative",
+"Number": "Singular",
+"Gender": "Masculine",
+"Lexical Form": "λύω",
+"Gloss": "having been loosed"
+}
+}
+
+];
+
+let current = null;
+
+function newWord() {
+    const filter = document.getElementById("posFilter").value;
+    let filtered = words;
+
+    if (filter !== "all") {
+        filtered = words.filter(w => w.pos === filter);
+    }
+
+    current = filtered[Math.floor(Math.random() * filtered.length)];
+    document.getElementById("word").innerText = current.word;
+    renderParsing();
+}
+
+function renderParsing() {
+    const parsingDiv = document.getElementById("parsing");
+    parsingDiv.innerHTML = "";
+
+    for (let key in current.parsing) {
+        const span = document.createElement("span");
+        span.innerText = key + ": " + current.parsing[key];
+
+        span.addEventListener("click", function(e) {
+            e.stopPropagation();
+            span.classList.toggle("hidden");
+        });
+
+        parsingDiv.appendChild(span);
+    }
+
+    parsingDiv.addEventListener("click", function() {
+        document.querySelectorAll("#parsing span").forEach(el => {
+            el.classList.remove("hidden");
+        });
+    });
+}
+
+newWord();
+</script>
+
+</body>
+</html>
