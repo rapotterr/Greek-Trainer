@@ -1,174 +1,148 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Greek Morphology Trainer</title>
-
+<title>Greek Morph Trainer</title>
 <style>
-body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #121826;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-h1 { font-size: 22px; }
-
-select, button {
-    font-size: 16px;
-    padding: 8px;
-    margin: 8px;
-    border-radius: 8px;
-    border: none;
-}
-
-#word {
-    font-size: 44px;
-    margin: 30px 0;
-}
-
-#parsing span {
-    display: inline-block;
-    background: #1f2937;
-    padding: 8px 12px;
-    margin: 6px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.hidden {
-    background: transparent !important;
-    color: transparent !important;
-    border: 1px dashed #444;
-}
-
-#parsing {
-    min-height: 100px;
-}
+body { font-family: Arial; text-align:center; margin-top:40px; }
+.word { font-size:40px; margin-bottom:20px; cursor:pointer; }
+.box { border:1px solid #333; padding:10px; margin:5px; display:inline-block; min-width:120px; }
+.hidden { background:#eee; color:#eee; }
+button { padding:10px 20px; margin:10px; }
 </style>
 </head>
 <body>
 
-<h1>Greek Morphology Trainer</h1>
+<h2>Greek Morphology Trainer</h2>
 
-<select id="posFilter">
-  <option value="all">All Parts of Speech</option>
-  <option value="noun">Nouns</option>
-  <option value="verb">Finite Verbs</option>
-  <option value="participle">Participles</option>
+<select id="bookSelect">
+<option value="all">All Books</option>
+<option value="mt">Matthew</option>
+<option value="mk">Mark</option>
+<option value="lk">Luke</option>
+<option value="jn">John</option>
+<option value="ac">Acts</option>
+<option value="ro">Romans</option>
+<option value="1co">1 Corinthians</option>
+<option value="2co">2 Corinthians</option>
+<option value="ga">Galatians</option>
+<option value="eph">Ephesians</option>
+<option value="php">Philippians</option>
+<option value="col">Colossians</option>
+<option value="1th">1 Thessalonians</option>
+<option value="2th">2 Thessalonians</option>
+<option value="1ti">1 Timothy</option>
+<option value="2ti">2 Timothy</option>
+<option value="tit">Titus</option>
+<option value="phm">Philemon</option>
+<option value="heb">Hebrews</option>
+<option value="jas">James</option>
+<option value="1pe">1 Peter</option>
+<option value="2pe">2 Peter</option>
+<option value="1jn">1 John</option>
+<option value="2jn">2 John</option>
+<option value="3jn">3 John</option>
+<option value="jud">Jude</option>
+<option value="rev">Revelation</option>
 </select>
+
+<select id="posSelect">
+<option value="all">All Parts of Speech</option>
+<option value="Noun">Noun</option>
+<option value="Verb">Verb</option>
+<option value="Participle">Participle</option>
+<option value="Adjective">Adjective</option>
+<option value="Pronoun">Pronoun</option>
+</select>
+
+<div class="word" id="wordDisplay"></div>
+<div id="info"></div>
 
 <button onclick="newWord()">New Word</button>
 
-<div id="word"></div>
-
-<div id="parsing"></div>
+<script src="dataset/all.js"></script>
+<script src="dataset/mt.js"></script>
+<script src="dataset/mk.js"></script>
+<script src="dataset/lk.js"></script>
+<script src="dataset/jn.js"></script>
+<script src="dataset/ac.js"></script>
+<script src="dataset/ro.js"></script>
+<script src="dataset/1co.js"></script>
+<script src="dataset/2co.js"></script>
+<script src="dataset/ga.js"></script>
+<script src="dataset/eph.js"></script>
+<script src="dataset/php.js"></script>
+<script src="dataset/col.js"></script>
+<script src="dataset/1th.js"></script>
+<script src="dataset/2th.js"></script>
+<script src="dataset/1ti.js"></script>
+<script src="dataset/2ti.js"></script>
+<script src="dataset/tit.js"></script>
+<script src="dataset/phm.js"></script>
+<script src="dataset/heb.js"></script>
+<script src="dataset/jas.js"></script>
+<script src="dataset/1pe.js"></script>
+<script src="dataset/2pe.js"></script>
+<script src="dataset/1jn.js"></script>
+<script src="dataset/2jn.js"></script>
+<script src="dataset/3jn.js"></script>
+<script src="dataset/jud.js"></script>
+<script src="dataset/rev.js"></script>
 
 <script>
-const words = [
 
-{
-word: "λόγος",
-pos: "noun",
-parsing: {
-"Part of Speech": "Noun",
-"Case": "Nominative",
-"Number": "Singular",
-"Gender": "Masculine",
-"Lexical Form": "λόγος",
-"Gloss": "word"
-}
-},
+let currentWord = null;
 
-{
-word: "λύει",
-pos: "verb",
-parsing: {
-"Part of Speech": "Verb",
-"Tense": "Present",
-"Voice": "Active",
-"Mood": "Indicative",
-"Person": "3rd",
-"Number": "Singular",
-"Lexical Form": "λύω",
-"Gloss": "he/she/it looses"
-}
-},
-
-{
-word: "λύσας",
-pos: "participle",
-parsing: {
-"Part of Speech": "Participle",
-"Tense": "Aorist",
-"Voice": "Active",
-"Case": "Nominative",
-"Number": "Singular",
-"Gender": "Masculine",
-"Lexical Form": "λύω",
-"Gloss": "having loosed"
-}
-},
-
-{
-word: "λυθείς",
-pos: "participle",
-parsing: {
-"Part of Speech": "Participle",
-"Tense": "Aorist",
-"Voice": "Passive",
-"Case": "Nominative",
-"Number": "Singular",
-"Gender": "Masculine",
-"Lexical Form": "λύω",
-"Gloss": "having been loosed"
-}
+function getDataset(code){
+    return DATASETS[code];
 }
 
-];
+function newWord(){
+    const book = document.getElementById("bookSelect").value;
+    const pos = document.getElementById("posSelect").value;
 
-let current = null;
+    let data = getDataset(book);
 
-function newWord() {
-    const filter = document.getElementById("posFilter").value;
-    let filtered = words;
-
-    if (filter !== "all") {
-        filtered = words.filter(w => w.pos === filter);
+    if(pos !== "all"){
+        data = data.filter(w => w.pos === pos);
     }
 
-    current = filtered[Math.floor(Math.random() * filtered.length)];
-    document.getElementById("word").innerText = current.word;
-    renderParsing();
+    currentWord = data[Math.floor(Math.random()*data.length)];
+
+    document.getElementById("wordDisplay").innerText = currentWord.word;
+
+    const infoDiv = document.getElementById("info");
+    infoDiv.innerHTML = "";
+
+    for(let key in currentWord){
+    if(key === "word") continue;
+
+    let wrapper = document.createElement("div");
+    wrapper.style.display = "inline-block";
+    wrapper.style.margin = "10px";
+
+    let label = document.createElement("div");
+    label.style.fontWeight = "bold";
+    label.style.marginBottom = "5px";
+    label.innerText = key.charAt(0).toUpperCase() + key.slice(1);
+
+    let box = document.createElement("div");
+    box.className = "box hidden";
+    box.innerText = currentWord[key];
+
+    box.onclick = function(){
+        box.classList.toggle("hidden");
+    };
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(box);
+    infoDiv.appendChild(wrapper);
 }
-
-function renderParsing() {
-    const parsingDiv = document.getElementById("parsing");
-    parsingDiv.innerHTML = "";
-
-    for (let key in current.parsing) {
-        const span = document.createElement("span");
-        span.innerText = key + ": " + current.parsing[key];
-
-        span.addEventListener("click", function(e) {
-            e.stopPropagation();
-            span.classList.toggle("hidden");
-        });
-
-        parsingDiv.appendChild(span);
-    }
-
-    parsingDiv.addEventListener("click", function() {
-        document.querySelectorAll("#parsing span").forEach(el => {
-            el.classList.remove("hidden");
-        });
-    });
 }
 
 newWord();
-</script>
 
+</script>
 </body>
 </html>
